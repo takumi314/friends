@@ -11,7 +11,6 @@ if (!$link) {
 	die('データーベースに接続できません:'. mysql_error());
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
 	//データーベースを選択する。
 	mysql_select_db('friends_sysmtem', $link);   // 
 
@@ -20,11 +19,8 @@ if (!$link) {
 	$result = mysql_query($sql, $link);
 
 	//メモリの節約のため、ここで接続を閉じる
-	mysql_close($link);
-
+	//mysql_close($link);
 ?>
-
-
 
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML4.01 Transitional//EN">
@@ -45,10 +41,21 @@ if (!$link) {
 <?php   //データベースから取得した都道府県を順に表示する。
 
 	if ($result !== false && mysql_num_rows($result)){
-			while ($post = mysql_fetch_assoc($result)){ 
-	 	     	//echo '<option value="' .htmlspecialchars($post['todo-huken_id'], ENT_QUOTES, 'UTF-8').'" >' .htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'). '</option>';
-	 	     	echo '<li><a href="./friends.php?from_id=' .htmlspecialchars($post['todo-huken_id'], ENT_QUOTES, 'UTF-8'). ' "> '. htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'). '</a></li>' ;
-				var_dump(htmlspecialchars($post['todo-huken_id'], ENT_QUOTES, 'UTF-8'));
+			while ($post = mysql_fetch_assoc($result)){
+
+				$sql = "SELECT count(*) FROM `friends_list` LEFT OUTER JOIN `todo-huken_list` ON `friends_list`.`from_id` = `todo-huken_list`.`todo-huken_id` WHERE `todo-huken_list`.`todo-huken_id` =".htmlspecialchars($post['todo-huken_id']).";";
+				//$sql = "SELECT count(*) FROM `todo-huken_list` INNER JOIN `friends_list` ON `todo-huken_list`.`todo-huken_id` = `friends_list`.`from_id` WHERE `todo-huken_list`.`todo-huken_id` = ".htmlspecialchars($post['todo-huken_id']).";";
+   				var_dump($sql);
+   				$population_area = mysql_query($sql,$link);
+   				var_dump($population_area);
+   					//人数が１人以上のときにリンクを有効とする
+   					if ($population_area == 0) {
+   						echo '<li>'. htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'). '（'.$population_area.'）</li>' ;
+   					} else{
+	 	     			//echo '<option value="' .htmlspecialchars($post['todo-huken_id'], ENT_QUOTES, 'UTF-8').'" >' .htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'). '</option>';
+	 	     			echo '<li><a href="./friends.php?from_id=' .htmlspecialchars($post['todo-huken_id'], ENT_QUOTES, 'UTF-8'). ' "> '. htmlspecialchars($post['name'], ENT_QUOTES, 'UTF-8'). '（'.$population_area.'）</a></li>' ;
+						//var_dump(htmlspecialchars($post['todo-huken_id'], ENT_QUOTES, 'UTF-8'));
+					}
 			}
 		}
 	// 取得結果を開放して接続を閉じる
