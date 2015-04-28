@@ -3,8 +3,8 @@
 //dデーターベース（オブジェクト）
 $link = mysql_connect('localhost','root','324032azzurro');   // $linkの中にmyseqlオブジェクトを入力
 
-//$sql = "SET NAMES UTF-8"; 			// MySQL上に"UTF-8"をセットする
-//$result = mysql_query($sql);
+$sql = "SET NAMES UTF-8"; 			// MySQL上に"UTF-8"をセットする
+$result = mysql_query($sql);
 
 if (!$link) {	die('データーベースに接続できません:'. mysql_error());  }
 
